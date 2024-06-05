@@ -5,18 +5,14 @@
   <title>{{ title }}</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.2.0/styles/default.min.css">
   <style>
-    .highlight pre {
+    pre,
+    .highlight pre,
+    .code-container pre {
       background: #f0f0f0;
       border-radius: 5px;
       padding: 10px;
       font-family: 'Courier New', Courier, monospace;
-    }
-
-    .highlight {
-      background: #f0f0f0;
-      border-radius: 5px;
-      padding: 10px;
-      font-family: 'Courier New', Courier, monospace;
+      overflow: auto;
     }
 
     .code-filename {
@@ -25,6 +21,13 @@
       padding: 5px;
       font-weight: bold;
       font-family: 'Courier New', Courier, monospace;
+      border-top-left-radius: 5px;
+      border-top-right-radius: 5px;
+      margin-top: 0;
+    }
+
+    .code-container {
+      margin-bottom: 20px;
     }
   </style>
 </head>

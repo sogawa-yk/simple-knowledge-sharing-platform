@@ -8,18 +8,21 @@ class CodeBlockExtension(Extension):
         md.preprocessors.register(CodeBlockPreprocessor(md), 'code_block', 25)
 
 class CodeBlockPreprocessor(Preprocessor):
-    RE = re.compile(r'```(\w+):([\w.\s]+)\n(.*?)```', re.DOTALL)
+    RE = re.compile(r'```(\w+):([\w./\s-]+?)\n([\s\S]*?)\n```', re.DOTALL)
 
     def run(self, lines):
         new_text = []
         text = '\n'.join(lines)
 
-        for match in self.RE.finditer(text):
+        def repl(match):
             lang = match.group(1)
-            filename = match.group(2).strip()
-            code = match.group(3)
-            replacement = f'<pre><code class="language-{lang}"><div class="code-filename">{filename}</div>{code}</code></pre>'
-            text = text.replace(match.group(0), replacement)
+            label = match.group(2).strip()
+            code = match.group(3).replace("&", "&amp;").replace("<", "&lt;").replace(">", "&gt;")
+            return f'<div class="code-container"><div class="code-filename">{label}</div><pre><code class="language-{lang}">{code}</code></pre></div>'
         
+        text = self.RE.sub(repl, text)
         new_text = text.split('\n')
         return new_text
+
+def makeExtension(**kwargs):
+    return CodeBlockExtension(**kwargs)

@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>{{ title }}</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.2.0/styles/default.min.css">
+  <style>
+    .highlight pre {
+      background: #f0f0f0;
+      border-radius: 5px;
+      padding: 10px;
+      font-family: 'Courier New', Courier, monospace;
+    }
+
+    .highlight {
+      background: #f0f0f0;
+      border-radius: 5px;
+      padding: 10px;
+      font-family: 'Courier New', Courier, monospace;
+    }
+
+    .code-filename {
+      background: #e0e0e0;
+      border-bottom: 1px solid #ccc;
+      padding: 5px;
+      font-weight: bold;
+      font-family: 'Courier New', Courier, monospace;
+    }
+  </style>
+</head>
+
+<body>
+  <h1>{{ title }}</h1>
+  <div>{{ content|safe }}</div>
+  <a href="/">Back to Articles</a>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.2.0/highlight.min.js"></script>
+  <script>hljs.highlightAll();</script>
+</body>
+
+</html>

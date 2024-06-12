@@ -1,5 +1,5 @@
 from flask import Flask, render_template, request, redirect, url_for, jsonify, send_from_directory
-import sqlite3
+import mysql.connector
 import markdown
 import os
 from werkzeug.utils import secure_filename
@@ -14,16 +14,29 @@ ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif'}
 
 # データベースの初期化
 def init_db():
-    conn = sqlite3.connect('database.db')
-    c = conn.cursor()
-    c.execute('CREATE TABLE IF NOT EXISTS articles (id INTEGER PRIMARY KEY, title TEXT, content TEXT)')
+    conn = mysql.connector.connect(
+        host='mysql',
+        port=3306,
+        user='root',
+        password='password',
+        database='flask_app'
+    )
+    cursor = conn.cursor()
+    cursor.execute('CREATE TABLE IF NOT EXISTS articles (id INT AUTO_INCREMENT PRIMARY KEY, title VARCHAR(255), content TEXT)')
     conn.commit()
+    cursor.close()
     conn.close()
 
 init_db()
 
 def get_db_connection():
-    conn = sqlite3.connect('database.db')
+    conn = mysql.connector.connect(
+        host='mysql',
+        port=3306,
+        user='root',
+        password='password',
+        database='flask_app'
+    )
     return conn
 
 def allowed_file(filename):
@@ -46,7 +59,7 @@ def new_article():
         content = request.form['content']
         conn = get_db_connection()
         cursor = conn.cursor()
-        cursor.execute('INSERT INTO articles (title, content) VALUES (?, ?)', (title, content))
+        cursor.execute('INSERT INTO articles (title, content) VALUES (%s, %s)', (title, content))
         conn.commit()
         cursor.close()
         conn.close()
@@ -57,7 +70,7 @@ def new_article():
 def show_article(article_id):
     conn = get_db_connection()
     cursor = conn.cursor()
-    cursor.execute('SELECT title, content FROM articles WHERE id = ?', (article_id,))
+    cursor.execute('SELECT title, content FROM articles WHERE id = %s', (article_id,))
     article = cursor.fetchone()
     cursor.close()
     conn.close()

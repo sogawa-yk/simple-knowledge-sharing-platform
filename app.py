@@ -2,6 +2,7 @@ from flask import Flask, render_template, request, redirect, url_for, jsonify, s
 import mysql.connector
 import markdown
 import os
+import uuid
 from werkzeug.utils import secure_filename
 from custom_markdown import CodeBlockExtension
 
@@ -15,11 +16,11 @@ ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif'}
 # データベースの初期化
 def init_db():
     conn = mysql.connector.connect(
-        host='mysql',
-        port=3306,
-        user='root',
-        password='password',
-        database='flask_app'
+        host=os.environ.get('DATABASE_HOST', 'db'),
+        port='3306',
+        user=os.environ.get('DATABASE_USER', 'root'),
+        password=os.environ.get('DATABASE_PASSWORD', 'password'),
+        database=os.environ.get('DATABASE_NAME', 'flask_app')
     )
     cursor = conn.cursor()
     cursor.execute('CREATE TABLE IF NOT EXISTS articles (id INT AUTO_INCREMENT PRIMARY KEY, title VARCHAR(255), content TEXT)')
@@ -31,11 +32,11 @@ init_db()
 
 def get_db_connection():
     conn = mysql.connector.connect(
-        host='mysql',
-        port=3306,
-        user='root',
-        password='password',
-        database='flask_app'
+        host=os.environ.get('DATABASE_HOST', 'db'),
+        port='3306',
+        user=os.environ.get('DATABASE_USER', 'root'),
+        password=os.environ.get('DATABASE_PASSWORD', 'password'),
+        database=os.environ.get('DATABASE_NAME', 'flask_app')
     )
     return conn
 
@@ -91,10 +92,11 @@ def upload():
     if file.filename == '':
         return jsonify({'error': 'No selected file'}), 400
     if file and allowed_file(file.filename):
-        filename = secure_filename(file.filename)
-        filepath = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+        # ユニークなファイル名を生成
+        unique_filename = str(uuid.uuid4()) + os.path.splitext(file.filename)[1]
+        filepath = os.path.join(app.config['UPLOAD_FOLDER'], unique_filename)
         file.save(filepath)
-        file_url = url_for('uploaded_file', filename=filename)
+        file_url = url_for('uploaded_file', filename=unique_filename)
         return jsonify({'filePath': file_url})
     return jsonify({'error': 'File not allowed'}), 400
 

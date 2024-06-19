@@ -43,6 +43,17 @@
       }
     });
 
+    // 画像コピーペースト対応
+    simplemde.codemirror.on('paste', function (editor, e) {
+      var items = (e.clipboardData || e.originalEvent.clipboardData).items;
+      for (var i = 0; i < items.length; i++) {
+        if (items[i].kind === 'file') {
+          var file = items[i].getAsFile();
+          uploadImage(file);
+        }
+      }
+    });
+
     function uploadImage(file) {
       var formData = new FormData();
       formData.append("file", file);

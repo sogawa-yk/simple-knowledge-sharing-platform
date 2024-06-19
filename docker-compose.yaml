@@ -1,0 +1,38 @@
+version: '3.8'
+
+services:
+  db:
+    image: mysql:8.0
+    container_name: mysql
+    environment:
+      - MYSQL_ROOT_PASSWORD=password
+      - MYSQL_DATABASE=flask_app
+    networks:
+      - flask-net
+    restart: unless-stopped
+
+  web:
+    build: .
+    container_name: web
+    ports:
+      - "8080:5000"
+    networks:
+      - flask-net
+    volumes:
+      - web-data:/app/uploads
+    depends_on:
+      - db
+    environment:
+      - DATABASE_HOST=db
+      - DATABASE_USER=root
+      - DATABASE_PASSWORD=password
+      - DATABASE_NAME=flask_app
+    restart: unless-stopped
+
+networks:
+  flask-net:
+    driver: bridge
+
+volumes:
+  web-data:
+    driver: local

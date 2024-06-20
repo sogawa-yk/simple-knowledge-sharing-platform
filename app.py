@@ -5,6 +5,7 @@ import os
 import uuid
 from werkzeug.utils import secure_filename
 from custom_markdown import CodeBlockExtension
+import time
 
 app = Flask(__name__)
 
@@ -28,6 +29,7 @@ def init_db():
     cursor.close()
     conn.close()
 
+time.sleep(10)
 init_db()
 
 def get_db_connection():

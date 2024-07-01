@@ -4,6 +4,12 @@ FROM python:3.9-slim
 # 作業ディレクトリを設定
 WORKDIR /app
 
+# 環境変数を設定
+ENV DATABASE_HOST qiita-sample-db
+ENV DATABASE_USER root
+ENV DATABASE_PASSWORD password
+ENV DATABASE_NAME flask_app
+
 # 必要なファイルをコンテナにコピー
 COPY requirements.txt requirements.txt
 COPY app.py app.py
